@@ -10,7 +10,7 @@ t[#t+1] = LoadActor("caut"..lang)..{
 		if lang == "jp" then
 			s:setsize(640,480)
 		else
-			s:setsize(800,480)
+			s:setsize(WideScale(800,854),480)
 		end
 		s:Center()
 	end;
