@@ -51,8 +51,8 @@ local host = Def.ActorFrame{
 }
 
 local xPosPlayer = {
-    P1 = WideScale(-178,-246),
-    P2 = WideScale(178,246)
+    P1 = WideScale(-178,-240),
+    P2 = WideScale(178,240)
 }
 
 local LifeChangedHandler
