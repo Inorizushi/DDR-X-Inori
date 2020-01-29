@@ -51,8 +51,8 @@ local host = Def.ActorFrame{
 }
 
 local xPosPlayer = {
-    P1 = -246,
-    P2 = 246
+    P1 = WideScale(-178,-246),
+    P2 = WideScale(178,246)
 }
 
 local LifeChangedHandler
@@ -73,7 +73,7 @@ for _, pn in pairs(GAMESTATE:GetEnabledPlayers()) do
         Name = pn,
         InitCommand=function(self)
             local short = ToEnumShortString(pn)
-            self:visible(false):setsize(312,20)
+            self:visible(false):setsize(WideScale(230,312),20)
             :diffuse(activeColor):x(xPosPlayer[short])
         end,
         OnCommand=function(s) s:draworder(3):zoomx(pn=='PlayerNumber_P2' and -1 or 1) end,

@@ -62,13 +62,17 @@ t[#t+1] = Def.ActorFrame{
 end;
 
 t[#t+1] = Def.ActorFrame{
-	--Decorations
+  --Decorations
+  
+	LoadActor("BASE")..{
+		InitCommand=cmd(Center;setsize,SCREEN_WIDTH,SCREEN_HEIGHT;diffusealpha,0);
+	};
 	LoadActor("_bg")..{
   OnCommand=cmd(FullScreen;cropbottom,1;sleep,0.265;linear,0.25;cropbottom,0);
   OffCommand=cmd(sleep,0.016;accelerate,0.25;addx,380);
   };
 	LoadActor("playerframe_bg")..{
-	OnCommand=cmd(x,SCREEN_CENTER_X-200;y,SCREEN_CENTER_Y+93;addx,-294;rotationz,-90;diffusealpha,0;sleep,0.2;linear,0.166;rotationz,0;addx,230;diffusealpha,1;linear,0.05;rotationz,10;addx,64;linear,0.066;rotationz,0);
+	OnCommand=cmd(x,WideScale(_screen.cx-170,SCREEN_CENTER_X-200);y,SCREEN_CENTER_Y+93;addx,-294;rotationz,-90;diffusealpha,0;sleep,0.2;linear,0.166;rotationz,0;addx,230;diffusealpha,1;linear,0.05;rotationz,10;addx,64;linear,0.066;rotationz,0);
 	OffCommand=cmd(sleep,0.266;accelerate,0.133;addx,-SCREEN_WIDTH/2);
 	};
 	LoadActor("normal")..{
@@ -77,9 +81,6 @@ t[#t+1] = Def.ActorFrame{
 
 	LoadActor("course")..{
 	Condition = GAMESTATE:IsCourseMode()
-	};
-	LoadActor("HDBASE")..{
-		InitCommand=cmd(Center;setsize,SCREEN_WIDTH,SCREEN_HEIGHT;diffusealpha,0);
 	};
 	--This is in another file for cleanliness.
 	LoadActor("BannerHandler.lua");

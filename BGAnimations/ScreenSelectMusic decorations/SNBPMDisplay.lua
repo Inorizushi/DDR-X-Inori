@@ -58,7 +58,7 @@ return Def.ActorFrame{
 	Def.BitmapText{
 		Font="BPMDisplay",
 		Name="BPMDisplay",
-		InitCommand=function(s) s:aux(0):settext "000":xy(_screen.cx-64,_screen.cy-82); return gmcmd(s, "SetNoBpmCommand") end,
+		InitCommand=function(s) s:aux(0):settext "000":xy(WideScale(_screen.cx-34,_screen.cx-64),_screen.cy-82); return gmcmd(s, "SetNoBpmCommand") end,
 		OnCommand=cmd(draworder,6;addx,-SCREEN_WIDTH/2;sleep,0.2;decelerate,0.233;addx,(SCREEN_WIDTH/2)+11;linear,0.066;addx,-11);
 		OffCommand=cmd(sleep,0.266;accelerate,0.133;addx,-SCREEN_WIDTH/2);
 		CurrentSongChangedMessageCommand = function(s, _)

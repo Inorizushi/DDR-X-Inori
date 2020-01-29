@@ -1,6 +1,6 @@
 local xPosPlayer = {
-    P1 = SCREEN_LEFT,
-    P2 = SCREEN_RIGHT
+    P1 = WideScale(SCREEN_LEFT-60,SCREEN_LEFT),
+    P2 = WideScale(SCREEN_RIGHT+60,SCREEN_RIGHT)
 }
 
 local yval = SCREEN_BOTTOM-40;

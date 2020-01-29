@@ -22,7 +22,7 @@ local function Radar()
 end
 
 local t = Def.ActorFrame {
-	InitCommand=cmd(xy,_screen.cx-192,_screen.cy);
+	InitCommand=cmd(xy,WideScale(_screen.cx-162,_screen.cx-192),_screen.cy);
 	LoadActor( "difficulty_bg" )..{
 		InitCommand=cmd(y,135);
 		OnCommand=cmd(zoomy,0;sleep,0.466;zoomy,0.136;linear,0.133;zoomy,1.036;linear,0.066;zoomy,0.88;linear,0.033;zoomy,1);

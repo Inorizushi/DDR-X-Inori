@@ -41,7 +41,7 @@ t[#t+1] = Def.ActorFrame{
 t[#t+1] = Def.Quad{
 	InitCommand=function(self)
 		self:diffuse(Color.Black):diffusealpha(0.5):xy(_screen.cx,_screen.cy)
-		self:setsize(SCREEN_WIDTH/1.3,380);
+		self:setsize(WideScale(SCREEN_WIDTH,SCREEN_WIDTH/1.3),380);
 	end;
 	OnCommand=cmd(diffusealpha,0;sleep,0.5;linear,0.2;diffusealpha,0.75);
 	OffCommand=cmd(linear,0.5;diffusealpha,0);
@@ -56,7 +56,7 @@ for i=1,13 do
 		Def.Quad{
 			InitCommand=function(self)
 				self:y(ri*20);
-				self:setsize(SCREEN_WIDTH/1.3,20);
+				self:setsize(WideScale(SCREEN_WIDTH,SCREEN_WIDTH/1.3),20);
 				if i%2 == 1 then
 					self:diffuse(Color.Black)
 				else

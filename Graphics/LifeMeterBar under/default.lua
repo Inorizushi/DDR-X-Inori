@@ -1,5 +1,5 @@
 return Def.ActorFrame{
 	LoadActor("back")..{
-		InitCommand=cmd(zoomto,312,20);
+		InitCommand=cmd(zoomto,WideScale(230,312),20);
 	};
 };

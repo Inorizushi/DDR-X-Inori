@@ -98,10 +98,17 @@ t[#t+1] = Def.ActorFrame{
 			 end;
 		 end;
 		 OnCommand=cmd(scaletoclipped,256,80);
-	 };
+		};
 		LoadActor( "../_playmode" )..{
 			InitCommand=cmd(x,-107;y,43;valign,0);
 		};
+		Def.Sprite{
+			InitCommand=function(s) s:xy(16,54) end,
+			BeginCommand=function(s)
+				local stage = STATSMAN:GetCurStageStats():GetStage()
+				s:Load(THEME:GetPathG("ScreenWithMenuElements","StageDisplay/"..stage))
+			end,
+		}
 	};
 };
 

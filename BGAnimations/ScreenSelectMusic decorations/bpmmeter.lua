@@ -74,7 +74,7 @@ return Def.ActorFrame{
 	Name="bpm gauge bright",
 	Texture="gauge",
 		InitCommand=function(self)
-			self:hibernate(1.25):x(SCREEN_CENTER_X-54):y(SCREEN_CENTER_Y-130):visible(false):croptop(1)
+			self:hibernate(1.25):x(WideScale(_screen.cx-24,SCREEN_CENTER_X-54)):y(SCREEN_CENTER_Y-130):visible(false):croptop(1)
 		end,
 		OnCommand=function(self)
 			self:sleep(0.264):visible(true)

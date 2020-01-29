@@ -49,7 +49,7 @@ local Banner =
 
 return Def.ActorFrame{
   Def.ActorFrame{
-		InitCommand=cmd(xy,_screen.cx-210,_screen.cy-127);
+		InitCommand=cmd(xy,WideScale(_screen.cx-180,_screen.cx-210),_screen.cy-127);
 		OnCommand=cmd(draworder,6;addx,-SCREEN_WIDTH/2;sleep,0.2;decelerate,0.233;addx,(SCREEN_WIDTH/2)+11;linear,0.066;addx,-11);
 		OffCommand=cmd(sleep,0.266;accelerate,0.133;addx,-SCREEN_WIDTH/2);
     LoadActor("BannerFrame");
