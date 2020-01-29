@@ -8,6 +8,11 @@ return Def.ActorFrame{
         s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Single/Art2 (doubleres).png"));
       end;
     end;
+    BeginCommand=function(s)
+      if GAMESTATE:GetNumPlayersEnabled() == 2 then
+        s:visible(false)
+      end
+    end,
     OnCommand=cmd(rotationz,45;diffusealpha,0;sleep,0.3;linear,0.15;diffusealpha,1;rotationz,0);
     OffCommand=cmd(linear,0.15;rotationz,45;diffusealpha,0);
     GainFocusCommand=cmd(rotationz,45;diffusealpha,0;diffusealpha,1;linear,0.15;rotationz,0);
@@ -29,6 +34,11 @@ return Def.ActorFrame{
   };
   Def.ActorFrame{
     InitCommand=cmd(xy,122,-96);
+    BeginCommand=function(s)
+      if GAMESTATE:GetNumPlayersEnabled() == 2 then
+        s:visible(false)
+      end
+    end,
     OnCommand=cmd(addx,SCREEN_WIDTH/1.5;sleep,0.3;linear,0.15;addx,-SCREEN_WIDTH/1.5;sleep,1.5;queuecommand,"Play";);
   	OffCommand=cmd(stoptweening;linear,0.1175;addx,SCREEN_WIDTH);
   	GainFocusCommand=cmd(stoptweening;sleep,.1;diffusealpha,1;sleep,1;queuecommand,"Play");

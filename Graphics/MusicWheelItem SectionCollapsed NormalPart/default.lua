@@ -23,15 +23,10 @@ local t = Def.ActorFrame {
 			local group = params.Text;
 			local so = GAMESTATE:GetSortOrder();
 			if so == 'SortOrder_Group' then
-				if group_name[group] ~= nil then
-					self:settext(group_rename[group])
-					self:diffuse(color(color_group[group]))
-				else
-					self:settext(group);
-					self:diffuse(color("#ff9f39"))
-				end;
+				self:diffuse(SongAttributes.GetGroupColor(group));
+				self:settext(SongAttributes.GetGroupName(group));
 			else
-				self:settext(group);
+				self:settext(string.gsub(group,"-%d%d%d",""));
 				self:diffuse(color("#ff9f39"))
 			end;
 			self:strokecolor(Color.Black)

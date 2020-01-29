@@ -1,10 +1,16 @@
 return Def.ActorFrame{
+	OnCommand=function(self)
+		if GAMESTATE:GetNumSidesJoined() == 2 then
+			self:playcommand("VersOn")
+		end
+	end;
   Def.Sprite{
     InitCommand=function(s)
       s:align(0,0):xy(-367,-165);
       s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Versus/Art (doubleres).png"));
     end;
-    OnCommand=cmd(diffusealpha,0);
+	VersOnCommand=cmd(rotationz,45;diffusealpha,0;sleep,0.3;linear,0.15;diffusealpha,1;rotationz,0);
+	OffCommand=cmd(linear,0.15;rotationz,45;diffusealpha,0);
     GainFocusCommand=cmd(rotationz,45;diffusealpha,0;diffusealpha,1;linear,0.15;rotationz,0);
     LoseFocusCommand=cmd(diffusealpha,0;);
   };
@@ -23,7 +29,8 @@ return Def.ActorFrame{
     end;
   };
   Def.ActorFrame{
-    InitCommand=cmd(xy,122,-96);
+	InitCommand=cmd(xy,122,-96);
+	VersOnCommand=cmd(addx,SCREEN_WIDTH/1.5;sleep,0.3;linear,0.15;addx,-SCREEN_WIDTH/1.5;sleep,1.5;queuecommand,"Play";);
   	OffCommand=cmd(stoptweening;linear,0.1175;addx,SCREEN_WIDTH);
   	GainFocusCommand=cmd(stoptweening;sleep,.1;diffusealpha,1;sleep,1;queuecommand,"Play");
   	LoseFocusCommand=cmd(stoptweening;linear,0.05;x,134;linear,0.05;x,122;sleep,0;diffusealpha,0);

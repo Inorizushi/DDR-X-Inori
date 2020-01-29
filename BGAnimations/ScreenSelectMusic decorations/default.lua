@@ -16,15 +16,16 @@ function WheelMove(mov)
   mw:Move(mov)
 end;
 
-for _, pn in pairs(GAMESTATE:GetEnabledPlayers()) do
 t[#t+1] = Def.ActorFrame{
   OnCommand=function(self)
     SCREENMAN:GetTopScreen():AddInputCallback(DDR.Input(self))
-    SCREENMAN:set_input_redirected(pn, false)
+    SCREENMAN:set_input_redirected(PLAYER_1, false)
+    SCREENMAN:set_input_redirected(PLAYER_2, false)
   end,
   OffCommand=function(self)
     SCREENMAN:GetTopScreen():RemoveInputCallback(DDR.Input(self))
-    SCREENMAN:set_input_redirected(pn, false)
+    SCREENMAN:set_input_redirected(PLAYER_1, false)
+    SCREENMAN:set_input_redirected(PLAYER_2, false)
   end,
   MenuLeftCommand=function(self) WheelMove(-1) end;
   MenuLeftRepeatCommand=cmd(queuecommand,"MenuLeft");
@@ -54,12 +55,12 @@ t[#t+1] = Def.ActorFrame{
 		--if mw:GetSelectedType('WheelItemDataType_Song') then
     if song then
 			SCREENMAN:AddNewScreenToTop("ScreenPlayerOptions","SM_MenuTimer")
-      SCREENMAN:set_input_redirected(pn, false)
+      SCREENMAN:set_input_redirected(PLAYER_1, false)
+      SCREENMAN:set_input_redirected(PLAYER_2, false)
     else
 		end;
 	end;
 };
-end;
 
 t[#t+1] = Def.ActorFrame{
   --Decorations

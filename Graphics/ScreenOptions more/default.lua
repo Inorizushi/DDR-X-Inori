@@ -21,7 +21,7 @@ return Def.ActorFrame{
 	Def.ActorFrame{
 		InitCommand=cmd(player,PLAYER_2;x,200;y,105;zoom,1);
 		LoadActor("OK")..{
-			OnCommand=cmd(zoomy,0);
+			OnCommand=cmd(zoomx,0);
 			OffCommand=cmd(linear,0.1;zoomy,1;sleep,0.5;linear,0.1;zoomy,0);
 			ExitSelectedP2Command=function(self)
 				setenv("PlayerOptionExitP2",true);

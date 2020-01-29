@@ -2,12 +2,12 @@ local t = Def.ActorFrame{};
 
 local xPosPlayerScore = {
     P1 = SCREEN_CENTER_X-228,
-    P2 = SCREEN_CENTER_X+287
+    P2 = SCREEN_CENTER_X+228
 }
 
 local xPosPlayerJudge = {
     P1 = SCREEN_CENTER_X-72,
-    P2 = SCREEN_CENTER_X+131
+    P2 = SCREEN_CENTER_X+72
 }
 
 for _, pn in pairs(GAMESTATE:GetEnabledPlayers()) do
@@ -47,7 +47,9 @@ t[#t+1] = Def.ActorFrame{
       self:linear(0.4):addx(SCREEN_WIDTH/2)
     end;
   end;
-  LoadActor("ScoreandDifficultyFrame");
+  LoadActor("ScoreandDifficultyFrame")..{
+    InitCommand=function(s) s:zoomx(pn==PLAYER_1 and 1 or -1) end,
+  };
   Def.RollingNumbers{
     Font="ScoreDisplayNormal Text";
     OnCommand=function(self)
@@ -61,7 +63,7 @@ t[#t+1] = Def.ActorFrame{
     OnCommand=function(self)
       local diff = GAMESTATE:GetCurrentSteps(pn):GetDifficulty();
       self:uppercase(true):zoom(0.7):settext(THEME:GetString("CustomDifficulty",ToEnumShortString(diff)))
-      :diffuse(CustomDifficultyToColor(diff)):xy(-20,-12)
+      :diffuse(CustomDifficultyToColor(diff)):xy(pn==PLAYER_2 and 20 or -20,-12)
     end;
   };
 };

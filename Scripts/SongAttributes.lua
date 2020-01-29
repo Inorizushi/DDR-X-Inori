@@ -192,5 +192,5 @@ function SongAttributes.GetGroupColor(group)
 			end
 		end
 	end
-	return {1,1,1,1}
+	return {1,0.6,0.2,1}
 end

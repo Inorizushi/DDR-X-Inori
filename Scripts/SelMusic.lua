@@ -1,5 +1,38 @@
 --Special Features for SuperNOVA styled themes (Inorizushi)
 
+function bannerpath(text, so)
+	if not text or text =="" then
+		return nil
+	end
+	
+	so = ToEnumShortString(so)
+	if so == "Title" then
+		return THEME:GetPathG("","Banner title")
+	else
+		local internalPath = THEME:GetAbsolutePath("Graphics/_banners/"..so.."/"..text..".png", true)
+		if FILEMAN:DoesFileExist(internalPath) then
+			return internalPath
+		end
+		if so == "Group" then
+			local groupPath = GetGroupBannerPath(text, SONGMAN:GetSongGroupBannerPath(text))
+			if FILEMAN:DoesFileExist(groupPath) then
+				return groupPath
+			else
+			end
+		end
+	end
+	return THEME:GetPathG("","Common fallback banner")
+end
+
+function bannerset(self)
+	local mw = SCREENMAN:GetTopScreen():GetChild("MusicWheel")
+	local fPath2 = THEME:GetPathG("","Common fallback banner")
+	if mw:GetSelectedType() == "WheelItemDataType_Section" then
+		fPath2 = bannerpath(mw:GetSelectedSection(), GAMESTATE:GetSortOrder())
+	end
+	return fPath2
+end
+
 --SelectMusic Positions
 
 function WideSSM()

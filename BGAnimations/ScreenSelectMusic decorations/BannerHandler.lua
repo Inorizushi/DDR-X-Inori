@@ -8,7 +8,7 @@ local Banner =
       if song then
         if song:HasBanner() then
           self:LoadBackground(song:GetBannerPath());
-          self:zoomtowidth(256):zoomtoheight(80)
+          self:zoomto(256,80)
           self:croptop(0):cropbottom(0)
         elseif song:HasJacket() then
           self:LoadBackground(song:GetJacketPath());
@@ -22,27 +22,13 @@ local Banner =
           self:croptop(0):cropbottom(0)
         end;
       elseif mw:GetSelectedType('WheelItemDataType_Section')  then
-        local group = mw:GetSelectedSection()
-        if group then
-          if so == "SortOrder_Group" then
-            if group_name[group] ~= nil then
-              self:Load(THEME:GetPathG("","_banners/group/"..group_name[group]))
-              self:zoomto(256,80);
-              self:croptop(0):cropbottom(0)
-            else
-              self:LoadFromSongGroup(group);
-              self:zoomtowidth(256):zoomtoheight(80)
-              self:croptop(0):cropbottom(0)
-            end;
-          elseif so == "SortOrder_Title" then
-            self:Load(THEME:GetPathG("","Banner title"))
-            self:zoomto(256,80);
-            self:croptop(0):cropbottom(0)
-          end;
-        end;
+        self:Load(bannerset(self))
+        self:zoomto(256,80)
+        self:croptop(0):cropbottom(0)
       else
         self:Load( THEME:GetPathG("","Common fallback banner") );
         self:croptop(0):cropbottom(0)
+        self:zoomto(256,80)
       end;
     end;
 };

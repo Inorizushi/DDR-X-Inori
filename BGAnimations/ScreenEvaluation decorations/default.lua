@@ -40,15 +40,15 @@ t[#t+1] = Def.ActorFrame{
 	LoadActor( "JudgeRows" )..{
 		InitCommand=cmd(y,-1);
 	};
-	LoadActor( "p1.png" )..{
+	LoadActor( "p1 (doubleres).png" )..{
 		InitCommand=cmd(x,-234;y,-73;);
 		OnCommand=cmd(zoomy,0;sleep,0.000;sleep,0.216;linear,0.1;zoomy,1);
 		OffCommand=cmd(zoomy,1;sleep,0.0000;sleep,0.016;linear,0.1;zoomy,0);
 		Condition=GAMESTATE:IsPlayerEnabled(PLAYER_1) and GAMESTATE:IsHumanPlayer(PLAYER_1);
 	};
 
-	LoadActor( "p2.png" )..{
-		InitCommand=cmd(x,248;y,-73);
+	LoadActor( "p2 (doubleres).png" )..{
+		InitCommand=cmd(x,234;y,-73);
 		OnCommand=cmd(zoomy,0;sleep,0.000;sleep,0.216;linear,0.1;zoomy,1);
 		OffCommand=cmd(zoomy,1;sleep,0.0000;sleep,0.016;linear,0.1;zoomy,0);
 		Condition=GAMESTATE:IsPlayerEnabled(PLAYER_2) and GAMESTATE:IsHumanPlayer(PLAYER_2);

@@ -190,3 +190,11 @@ function GetLeadingAttribute(number, baselength, color)
 		return {Length = len, Diffuse = color}
 	end
 end
+
+
+FullComboEffectColor = {
+	TapNoteScore_W1=color("#fefed0");
+	TapNoteScore_W2=color("#f8fd6d");
+	TapNoteScore_W3=color("#01e603");
+	TapNoteScore_W4=color("#10e0f1");
+};

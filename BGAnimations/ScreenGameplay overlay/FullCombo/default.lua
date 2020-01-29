@@ -1,878 +1,338 @@
---　FullCombo base from moonlight by AJ 187
+local pn = ...
+assert(pn)
 
-local pn = ...;
-assert(pn);
-local t = Def.ActorFrame{};
-local Center1Player = PREFSMAN:GetPreference('Center1Player');
-local NumPlayers = GAMESTATE:GetNumPlayersEnabled();
-local NumSides = GAMESTATE:GetNumSidesJoined();
-local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn);
-local st = GAMESTATE:GetCurrentStyle():GetStepsType();
+local Center1Player = PREFSMAN:GetPreference('Center1Player')
+local NumPlayers = GAMESTATE:GetNumPlayersEnabled()
+local NumSides = GAMESTATE:GetNumSidesJoined()
+local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn)
+local st = GAMESTATE:GetCurrentStyle():GetStepsType()
+local modre = GAMESTATE:PlayerIsUsingModifier(pn,'reverse')
 
 local function GetPosition(pn)
---[[	if Center1Player and NumPlayers == 1 and NumSides == 1 then return SCREEN_CENTER_X; end;
-	local strPlayer = (NumPlayers == 1) and "OnePlayer" or "TwoPlayers";
-	local strSide = (NumSides == 1) and "OneSide" or "TwoSides";
-	return THEME:GetMetric("ScreenGameplay","Player".. ToEnumShortString(pn) .. strPlayer .. strSide .."X");--]]
 	if st == "StepsType_Dance_Double" or st == "StepsType_Dance_Solo" or Center1Player then return SCREEN_WIDTH/2;
 	else
-	local strPlayer = (NumPlayers == 1) and "OnePlayer" or "TwoPlayers";
-	local strSide = (NumSides == 1) and "OneSide" or "TwoSides";
-	return THEME:GetMetric("ScreenGameplay","Player".. ToEnumShortString(pn) .. strPlayer .. strSide .."X");
-end;
-end;
+		local strPlayer = (NumPlayers == 1) and "OnePlayer" or "TwoPlayers"
+		local strSide = (NumSides == 1) and "OneSide" or "TwoSides"
+		return THEME:GetMetric("ScreenGameplay","Player"..ToEnumShortString(pn)..strPlayer..strSide.."X")
+	end
+end
 
 local function GradationWidth()
 	if st == "StepsType_Dance_Double" then return (2);
 	elseif st == "StepsType_Dance_Solo" then return (1.5);
 	else return (1);
-	end;
-end;
+	end
+end
 
 local function DownGradationWidth()
 	if st == "StepsType_Dance_Double" then return (SCREEN_WIDTH);
 	elseif st == "StepsType_Dance_Solo" then return (384);
 	else return (256);
-	end;
-end;
+	end
+end
 
 local function TextZoom()
 	if st == "StepsType_Dance_Double" then return (1.61);
 	elseif st == "StepsType_Dance_Solo" then return (1.3);
 	else return (1);
-	end;
-end;
+	end
+end
 
--- FullComboColor base from Default Extended by A.C
-local function GetFullComboEffectColor(pss)
-	local r;
-		if pss:FullComboOfScore('TapNoteScore_W1') == true then
-			r=color("#ffffff");
-		elseif pss:FullComboOfScore('TapNoteScore_W2') == true then
-			r=color("#fafc44");
-		elseif pss:FullComboOfScore('TapNoteScore_W3') == true then
-			r=color("#06fd32");
-		end;
-	return r;
-end;
+local function IsFullCombo()
+	if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W4') then
+		return true
+	else
+		return false
+	end
+end
 
--- FullComboColor2 Ring
-local function GetFullComboEffectColor2(pss)
-	local r;
-		if pss:FullComboOfScore('TapNoteScore_W1') == true then
-			r=color("#fefed0");
-		elseif pss:FullComboOfScore('TapNoteScore_W2') == true then
-			r=color("#f8fd6d");
-		elseif pss:FullComboOfScore('TapNoteScore_W3') == true then
-			r=color("#01e603");
-		end;
-	return r;
-end;
-
--- Sound
-t[#t+1] = LoadActor("Combo_Splash") .. {
-	OffCommand=function(self)
-		if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-			self:play();
-		end;
-	end;
+local t = Def.ActorFrame{
+	InitCommand=function(s) s:zoom(0.5) end,
 };
 
--- Parts
+t[#t+1] = LoadActor("Combo_Splash")..{
+	OffCommand=function(s)
+		if IsFullCombo() then
+			s:play()
+		end
+	end,
+};
+
+local NumColumns = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer()
+local NFWidth = GAMESTATE:GetCurrentStyle():GetWidth(pn)*(NumColumns/1.8)
+for i=1,NumColumns do
+	local ColumnInfo = GAMESTATE:GetCurrentStyle():GetColumnInfo(pn,i)
+	t[#t+1] = Def.ActorFrame{
+		InitCommand=function(s)
+			s:x(GetPosition(pn)):diffusealpha(0)
+			if modre then
+				s:y(_screen.cy+(THEME:GetMetric("Player","ReceptorArrowsYReverse")+190))
+			else
+				s:y(_screen.cy+(THEME:GetMetric("Player","ReceptorArrowsYStandard")-190))
+			end
+		end,
+		OffCommand = function(s)
+			if IsFullCombo() then
+				s:diffuse(FullComboEffectColor[pss:FullComboType()])
+			end
+		end,
+		LoadActor("Star")..{
+			InitCommand=function(s) s:blend(Blend.Add)
+				s:x((NFWidth/1.6)-(i*tonumber(THEME:GetMetric("ArrowEffects","ArrowSpacing")*2.25)))
+			end,
+			OffCommand=function(s)
+				if IsFullCombo() then
+					s:diffusealpha(1):rotationz(-60):zoom(2):linear(0.5):zoom(0.3):rotationz(30)
+					:linear(0.25):zoom(0):rotationz(120)
+				end
+			end,
+		},
+		LoadActor("SStar")..{
+			InitCommand=function(s) s:zoom(0):blend(Blend.Add)
+				s:x((NFWidth/1.6)-(i*tonumber(THEME:GetMetric("ArrowEffects","ArrowSpacing")*2.25)))
+			end,
+			OffCommand=function(s)
+				if IsFullCombo() then
+					s:diffuse(Color.White):sleep(0.65):diffusealpha(0.8)
+					:zoomx(2):zoomy(0):linear(0.1):zoomy(2):rotationz(0):linear(0.5)
+					:zoom(1.2):rotationz(90):diffusealpha(0.4):linear(0.05):diffusealpha(0)
+				end
+			end,
+		}
+	}
+end
+
 t[#t+1] = Def.ActorFrame{
-	InitCommand=cmd(x,GetPosition(pn);diffusealpha,0);
-	OffCommand = function(self)
-		if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-			self:diffuse(GetFullComboEffectColor(pss));
-		end;
-	end;
-
-	-- Note flash star
-	Def.ActorFrame{
-		InitCommand=function(self)
-			if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-				self:y(SCREEN_CENTER_Y+152);
-				self:addy(80);
+	InitCommand=function(s) s:x(GetPosition(pn)):diffusealpha(0) end,
+	OffCommand = function(s)
+		if IsFullCombo() then
+			s:diffuse(FullComboEffectColor[pss:FullComboType()])
+		end
+	end,
+	--Up Gradient
+	LoadActor("Down")..{
+		InitCommand=function(s) s:valign(1)
+			if modre then
+				s:y(SCREEN_BOTTOM)
+				:zoomy(1)
 			else
-				self:y(SCREEN_CENTER_Y-160);
-				self:addy(-80);
-			end;
-			self:diffusealpha(1);
-		end;
-		-- Left - down in single
-		LoadActor("Star") .. {
-			InitCommand=cmd(blend,"BlendMode_Add";diffusealpha,1);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(1);
-					self:addx(-48);
-					self:rotationz(-25);
-					self:zoom(2);
-					self:linear(0.5);
-					self:zoom(0.3);
-					self:rotationz(65);
-					self:linear(0.25);
-					self:zoom(0);
-					self:rotationz(155);
-				end;
-			end;
-		};
-		-- Right - up in single
-		LoadActor("Star") .. {
-			InitCommand=cmd(blend,"BlendMode_Add";diffusealpha,1);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(1);
-					self:addx(48);
-					self:rotationz(35);
-					self:zoom(2);
-					self:linear(0.5);
-					self:zoom(0.3);
-					self:rotationz(-55);
-					self:linear(0.25);
-					self:zoom(0);
-					self:rotationz(-145);
-				end;
-			end;
-		};
-		-- Left2 - left in single
-		LoadActor("Star") .. {
-			InitCommand=cmd(blend,"BlendMode_Add";diffusealpha,1);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(1);
-					self:addx(-144);
-					self:rotationz(-60);
-					self:zoom(2);
-					self:linear(0.5);
-					self:zoom(0.3);
-					self:rotationz(30);
-					self:linear(0.25);
-					self:zoom(0);
-					self:rotationz(120);
-				end;
-			end;
-		};
-		-- Right2 - right in single
-		LoadActor("Star") .. {
-			InitCommand=cmd(blend,"BlendMode_Add";diffusealpha,1);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(1);
-					self:addx(144);
-					self:rotationz(90);
-					self:zoom(2);
-					self:linear(0.5);
-					self:zoom(0.3);
-					self:rotationz(0);
-					self:linear(0.25);
-					self:zoom(0);
-					self:rotationz(-90);
-				end;
-			end;
-		};
-		-- Left3 Solo and Double
-		LoadActor("Star") .. {
-			InitCommand=cmd(blend,"BlendMode_Add";diffusealpha,1);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(1);
-					self:addx(-240);
-					self:rotationz(-15);
-					self:zoom(2);
-					self:linear(0.5);
-					self:zoom(0.3);
-					self:rotationz(75);
-					self:linear(0.25);
-					self:zoom(0);
-					self:rotationz(165);
-				end;
-			end;
-			Condition=st == "StepsType_Dance_Double" or st == "StepsType_Dance_Solo";
-		};
-		-- Right3 Solo and Double
-		LoadActor("Star") .. {
-			InitCommand=cmd(blend,"BlendMode_Add";diffusealpha,1);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(1);
-					self:addx(240);
-					self:rotationz(90);
-					self:zoom(2);
-					self:linear(0.5);
-					self:zoom(0.3);
-					self:rotationz(0);
-					self:linear(0.25);
-					self:zoom(0);
-					self:rotationz(-90);
-				end;
-			end;
-			Condition=st == "StepsType_Dance_Double" or st == "StepsType_Dance_Solo";
-		};
-		-- Left4 Double
-		LoadActor("Star") .. {
-			InitCommand=cmd(blend,"BlendMode_Add";diffusealpha,1);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(1);
-					self:addx(-336);
-					self:rotationz(-60);
-					self:zoom(2);
-					self:linear(0.5);
-					self:zoom(0.3);
-					self:rotationz(30);
-					self:linear(0.25);
-					self:zoom(0);
-					self:rotationz(120);
-				end;
-			end;
-			Condition=st == "StepsType_Dance_Double";
-		};
-		-- Right4 Double
-		LoadActor("Star") .. {
-			InitCommand=cmd(blend,"BlendMode_Add";diffusealpha,1);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(1);
-					self:addx(336);
-					self:rotationz(35);
-					self:zoom(2);
-					self:linear(0.5);
-					self:zoom(0.3);
-					self:rotationz(-55);
-					self:linear(0.25);
-					self:zoom(0);
-					self:rotationz(-145);
-				end;
-			end;
-			Condition=st == "StepsType_Dance_Double";
-		};
-	};
-
-	-- Up gradation
-	LoadActor("Down") .. {
-		InitCommand=cmd(vertalign,bottom);
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-					self:y(SCREEN_BOTTOM);
-					self:diffusealpha(0.5);
-					self:zoomx(GradationWidth());
-					self:zoomy(1);
-					self:linear(0.25);
-					self:diffusealpha(0.25);
-					self:zoomx(GradationWidth()+0.25);
-					self:zoomy(2);
-					self:linear(0.25);
-					self:zoomx(GradationWidth());
-					self:zoomy(1.5);
-					self:diffusealpha(0);
+				s:y(SCREEN_TOP):zoomy(-1)
+			end
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				if modre then
+					s:diffusealpha(0.5):zoomtowidth(NFWidth)
+					:linear(0.25):diffusealpha(0.25):zoomtowidth(NFWidth+0.25):zoomy(2):linear(0.25)
+					:zoomtowidth(NFWidth):zoomy(1.5):diffusealpha(0)
 				else
-					self:y(SCREEN_TOP);
-					self:diffusealpha(0.5);
-					self:zoomx(GradationWidth());
-					self:zoomy(-1);
-					self:linear(0.25);
-					self:diffusealpha(0.25);
-					self:zoomx(GradationWidth()+0.25);
-					self:zoomy(-2);
-					self:linear(0.25);
-					self:zoomx(GradationWidth());
-					self:zoomy(-1.5);
-					self:diffusealpha(0);
-				end;
-			end;
-		end;
-	};
-
-	-- Slim light
-	Def.ActorFrame{
-		InitCommand=function(self)
-			if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-				self:y(SCREEN_CENTER_Y+152);
+					s:diffusealpha(0.5):zoomtowidth(NFWidth)
+					:linear(0.25):diffusealpha(0.25):zoomtowidth(NFWidth+0.25):zoomy(-2):linear(0.25)
+					:zoomtowidth(NFWidth):zoomy(-1.5):diffusealpha(0)
+				end
+			end
+		end,
+	},
+	LoadActor("Star")..{
+		InitCommand=function(s)
+			s:blend(Blend.Add)
+			if modre then
+				s:y(_screen.cy+(THEME:GetMetric("Player","ReceptorArrowsYReverse")+190))
 			else
-				self:y(SCREEN_CENTER_Y-160);
-			end;
-		end;
-		-- Center
-		LoadActor("Slim") .. {
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(0.5);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:linear(0.25);
-					self:diffusealpha(0.25);
-					self:zoomx(1);
-					self:zoomy(1.75);
-					self:linear(0.25);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:diffusealpha(0);
-				end;
-			end;
-		};
-		-- Left
-		LoadActor("Slim") .. {
-			InitCommand=cmd(addx,-64);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(0.5);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:linear(0.25);
-					self:diffusealpha(0.25);
-					self:zoomx(1);
-					self:zoomy(1.75);
-					self:linear(0.25);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:diffusealpha(0);
-				end;
-			end;
-		};
-		-- Right
-		LoadActor("Slim") .. {
-			InitCommand=cmd(addx,64);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(0.5);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:linear(0.25);
-					self:diffusealpha(0.25);
-					self:zoomx(1);
-					self:zoomy(1.75);
-					self:linear(0.25);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:diffusealpha(0);
-				end;
-			end;
-		};
-		-- Solo and Double left
-		LoadActor("Slim") .. {
-			InitCommand=cmd(addx,-128);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(0.5);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:linear(0.25);
-					self:diffusealpha(0.25);
-					self:zoomx(1);
-					self:zoomy(1.75);
-					self:linear(0.25);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:diffusealpha(0);
-				end;
-			end;
-			Condition=st == "StepsType_Dance_Double" or st == "StepsType_Dance_Solo";
-		};
-		-- Solo and Double right
-		LoadActor("Slim") .. {
-			InitCommand=cmd(addx,128);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(0.5);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:linear(0.25);
-					self:diffusealpha(0.25);
-					self:zoomx(1);
-					self:zoomy(1.75);
-					self:linear(0.25);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:diffusealpha(0);
-				end;
-			end;
-			Condition=st == "StepsType_Dance_Double" or st == "StepsType_Dance_Solo";
-		};
-		-- Double left
-		LoadActor("Slim") .. {
-			InitCommand=cmd(addx,-192);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(0.5);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:linear(0.25);
-					self:diffusealpha(0.25);
-					self:zoomx(1);
-					self:zoomy(1.75);
-					self:linear(0.25);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:diffusealpha(0);
-				end;
-			end;
-			Condition=st == "StepsType_Dance_Double";
-		};
-		-- Double right
-		LoadActor("Slim") .. {
-			InitCommand=cmd(addx,192);
-			OffCommand=function(self)
-				if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-					self:diffusealpha(0.5);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:linear(0.25);
-					self:diffusealpha(0.25);
-					self:zoomx(1);
-					self:zoomy(1.75);
-					self:linear(0.25);
-					self:zoomx(0);
-					self:zoomy(0.5);
-					self:diffusealpha(0);
-				end;
-			end;
-			Condition=st == "StepsType_Dance_Double";
-		};
-	};
-
-	-- Star
-	LoadActor("Star") .. {
-		InitCommand=cmd(blend,Blend.Add);
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-					self:y(SCREEN_CENTER_Y+152);
-					self:diffusealpha(1);
-					self:zoomx(0);
-					self:linear(0.1);
-					self:zoomx(4);
-					self:zoomy(1);
-					self:linear(0.12);
-					self:zoomx(1);
-					self:addy(-120);
-					self:linear(0.36);
-					self:addy(-720);
+				s:y(_screen.cy+(THEME:GetMetric("Player","ReceptorArrowsYStandard")-190))
+			end
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				if modre then
+					s:diffusealpha(1):zoomx(0):linear(0.1):zoomx(6):zoomy(1):linear(0.12)
+					:zoomx(1):addy(-180):linear(0.36):addy(-1080)
 				else
-					self:y(SCREEN_CENTER_Y-160);
-					self:diffusealpha(1);
-					self:zoomx(0);
-					self:linear(0.1);
-					self:zoomx(4);
-					self:zoomy(1);
-					self:linear(0.12);
-					self:zoomx(1);
-					self:addy(120);
-					self:linear(0.36);
-					self:addy(720);
-				end;
-			end;
-		end;
-	};
-
-	-- Down gradation
-	LoadActor("Down") .. {
-		InitCommand=cmd(vertalign,bottom);
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-					self:y(SCREEN_TOP);
-					self:diffusealpha(0);
-					self:sleep(0.48);
-					self:diffusealpha(0.5);
-					self:zoomto(64,0);
-					self:linear(0.5);
-					self:zoomto(DownGradationWidth()+52,-480);
-					self:linear(0.3);
-					self:diffusealpha(0);
-					self:zoomto(DownGradationWidth(),-480);
+					s:diffusealpha(1):zoomx(0):linear(0.1):zoomx(6):zoomy(1):linear(0.12)
+					:zoomx(1):addy(180):linear(0.36):addy(1080)
+				end
+			end
+		end,
+	},
+	--Bottom Gradient
+	LoadActor("Down")..{
+		InitCommand=function(s) s:valign(1)
+			if modre then
+				s:y(SCREEN_TOP)
+			else
+				s:y(SCREEN_BOTTOM)
+			end
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				if modre then
+					s:y(SCREEN_TOP):diffusealpha(0):sleep(0.48):diffusealpha(0.5):zoomto(96,0):linear(0.5)
+					:zoomto(NFWidth+42,-SCREEN_HEIGHT):linear(0.3):diffusealpha(0):zoomto(NFWidth,-SCREEN_HEIGHT)
 				else
-					self:y(SCREEN_BOTTOM);
-					self:diffusealpha(0);
-					self:sleep(0.48);
-					self:diffusealpha(0.5);
-					self:zoomto(64,0);
-					self:linear(0.5);
-					self:zoomto(DownGradationWidth()+52,480);
-					self:linear(0.3);
-					self:diffusealpha(0);
-					self:zoomto(DownGradationWidth(),480);
-				end;
-			end;
-		end;
-	};
-
-	-- Left gradation
-	LoadActor("Gradation") .. {
-		InitCommand=cmd(vertalign,top;horizalign,right);
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-					self:y(SCREEN_BOTTOM);
-					self:addx(46);
-					self:zoomx(0.75);
-					self:zoomy(-0.5);
-					self:diffusealpha(0);
-					self:sleep(0.24);
-					self:diffusealpha(1);
-					self:linear(0.24);
-					self:zoomy(-1);
-
-					self:linear(0.5);
-					self:zoomx(1);
-					self:addx(-14);
-					self:linear(0.1);
-					self:addx(-28);
-					self:linear(0.2);
-					self:addx(-GradationWidth()*128-64);
-					self:diffusealpha(0);
+					s:y(SCREEN_BOTTOM):diffusealpha(0):sleep(0.48):diffusealpha(0.5):zoomto(96,0):linear(0.5)
+					:zoomto(NFWidth+42,SCREEN_HEIGHT):linear(0.3):diffusealpha(0):zoomto(NFWidth,SCREEN_HEIGHT)
+				end
+			end
+		end,
+	},
+	--Left Gradient
+	LoadActor("Gradation")..{
+		InitCommand=function(s)
+			s:align(0,1)
+			if modre then
+				s:y(SCREEN_BOTTOM)
+			else
+				s:y(SCREEN_TOP)
+			end
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				s:zoomx(1.125):zoomy(-0.75):diffusealpha(0)
+				:sleep(0.24):diffusealpha(1):linear(0.24):zoomy(-1)
+				:linear(0.5):zoomx(-1):addx(-21):linear(0.1):addx(-42):linear(0.2):addx(-(NFWidth/2)-96)
+				:diffusealpha(0)
+			end
+		end,
+	},
+	--Right Gradient
+	LoadActor("Gradation")..{
+		InitCommand=function(s)
+			s:align(0,1)
+			if modre then
+				s:y(SCREEN_BOTTOM)
+			else
+				s:y(SCREEN_TOP)
+			end
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				s:zoomx(-1.125):zoomy(-0.75):diffusealpha(0)
+				:sleep(0.24):diffusealpha(1):linear(0.24):zoomy(-1):linear(0.5)
+				:zoomx(1):addx(21):linear(0.1):addx(42):linear(0.2):addx((NFWidth/2)+96)
+				:diffusealpha(0)
+			end
+		end,
+	},
+	LoadActor("Star")..{
+		InitCommand=function(s)
+			s:blend(Blend.Add):zoom(0)
+			s:y(_screen.cy)
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				s:sleep(0.65):diffusealpha(1):zoomx(3):zoomy(0):linear(0.1)
+				:zoomy(3):rotationz(0):linear(0.5):zoom(1.8):rotationz(90):diffusealpha(0.4)
+				:linear(0.05):diffusealpha(0)
+			end
+		end,
+	},
+	LoadActor("SStar")..{
+		InitCommand=function(s)
+			s:blend(Blend.Add):zoom(0)
+			s:y(_screen.cy)
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				s:diffuse(Color.White):sleep(0.65):diffusealpha(0.8):zoomx(3):zoomy(0):linear(0.1)
+				:zoomy(3):rotationz(0):linear(0.5):zoom(1.8):rotationz(90):diffusealpha(0.4)
+				:linear(0.05):diffusealpha(0)
+			end
+		end,
+	},
+	LoadActor("Fullcombo01")..{
+		InitCommand=function(s)
+			s:zoom(0)
+			s:y(_screen.cy)
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				s:sleep(0.65):zoomx(3):zoomy(0):linear(0.1):zoomy(3)
+				:rotationz(0):linear(0.5):zoom(1.8):rotationz(90):linear(0.15)
+				:zoomy(0):zoomx(0.75):diffusealpha(0)
+			end
+		end,
+	},
+	LoadActor("Fullcombo02")..{
+		InitCommand=function(s)
+			s:zoom(0)
+			s:y(_screen.cy)
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				s:sleep(0.65):zoomx(6):zoomy(0):linear(0.1):zoomy(6)
+				:rotationz(0):linear(0.5):zoom(1.875):rotationz(-90):linear(0.15)
+				:zoomy(0):zoomx(0.75):diffusealpha(0)
+			end
+		end,
+	},
+	LoadActor("SStar")..{
+		InitCommand=function(s)
+			s:diffusealpha(0):blend(Blend.Add)
+			s:y(_screen.cy)
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				if modre then
+					s:diffusealpha(0.95):zoomx(0):linear(0.1):zoomx(6):zoomy(1)
+					:linear(0.12):zoomx(1):addy(-180):linear(0.36):addy(-1080)
 				else
-					self:y(SCREEN_TOP);
-					self:addx(46);
-					self:zoomx(0.75);
-					self:zoomy(0.5);
-					self:diffusealpha(0);
-					self:sleep(0.24);
-					self:diffusealpha(1);
-					self:linear(0.24);
-					self:zoomy(1);
-
-					self:linear(0.5);
-					self:zoomx(1);
-					self:addx(-14);
-					self:linear(0.1);
-					self:addx(-28);
-					self:linear(0.2);
-					self:addx(-GradationWidth()*128-64);
-					self:diffusealpha(0);
-				end;
-			end;
-		end;
-	};
-
-	-- Right gradation
-	LoadActor("Gradation") .. {
-		InitCommand=cmd(vertalign,top;horizalign,right);
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-					self:y(SCREEN_BOTTOM);
-					self:addx(-46);
-					self:zoomx(-0.75);
-					self:zoomy(-0.5);
-					self:diffusealpha(0);
-					self:sleep(0.24);
-					self:diffusealpha(1);
-					self:linear(0.24);
-					self:zoomy(-1);
-
-					self:linear(0.5);
-					self:zoomx(-1);
-					self:addx(14);
-					self:linear(0.1);
-					self:addx(28);
-					self:linear(0.2);
-					self:addx(GradationWidth()*128+64);
-					self:diffusealpha(0);
-				else
-					self:y(SCREEN_TOP);
-					self:addx(-46);
-					self:zoomx(-0.75);
-					self:zoomy(0.5);
-					self:diffusealpha(0);
-					self:sleep(0.24);
-					self:diffusealpha(1);
-					self:linear(0.24);
-					self:zoomy(1);
-
-					self:linear(0.5);
-					self:zoomx(-1);
-					self:addx(14);
-					self:linear(0.1);
-					self:addx(28);
-					self:linear(0.2);
-					self:addx(GradationWidth()*128+64);
-					self:diffusealpha(0);
-				end;
-			end;
-		end;
-	};
-
-	-- Double only left gradation2
-	LoadActor("Gradation") .. {
-		InitCommand=cmd(horizalign,right);
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				self:y(SCREEN_CENTER_Y);
-				self:addx(46);
-				self:diffusealpha(0);
-				self:zoomx(0.75);
-				self:sleep(0.98);
-				self:linear(0.1);
-				self:diffusealpha(1);
-				self:zoomx(1);
-				self:addx(-14);
-				self:linear(0.1);
-				self:addx(-28);
-				self:linear(0.2);
-				self:addx(-GradationWidth()*128-64);
-				self:diffusealpha(0);
-			end;
-		end;
-		Condition=st == "StepsType_Dance_Double";
-	};
-
-	-- Double only right gradation2
-	LoadActor("Gradation") .. {
-		InitCommand=cmd(horizalign,right);
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				self:y(SCREEN_CENTER_Y);
-				self:addx(-46);
-				self:diffusealpha(0);
-				self:zoomx(-0.75);
-				self:sleep(0.98);
-				self:linear(0.1);
-				self:diffusealpha(1);
-				self:zoomx(-1);
-				self:addx(14);
-				self:linear(0.1);
-				self:addx(28);
-				self:linear(0.2);
-				self:addx(GradationWidth()*128+64);
-				self:diffusealpha(0);
-			end;
-		end;
-		Condition=st == "StepsType_Dance_Double";
-	};
-
-	-- Ring star
-	LoadActor( "Star" ) .. {
-		InitCommand=function(self)
-			self:zoom(0);
-			self:blend(Blend.Add);
-			if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-				self:y(SCREEN_CENTER_Y+57);
-			else
-				self:y(SCREEN_CENTER_Y-65);
-			end;
-		end;
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				self:sleep(0.65);
-				self:diffusealpha(1);
-				self:zoomx(2);
-				self:zoomy(0);
-				self:linear(0.1);
-				self:zoomy(2);
-				self:rotationz(0);
-				self:linear(0.5);
-				self:zoom(1.2);
-				self:diffusealpha(0.4);
-				self:rotationz(90);
-				self:linear(0.05);
-				self:diffusealpha(0);
-			end;
-		end;
-	};
-
-	-- Ring star highlight
-	LoadActor( "SStar" ) .. {
-		InitCommand=function(self)
-			self:zoom(0);
-			self:blend(Blend.Add);
-			if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-				self:y(SCREEN_CENTER_Y+57);
-			else
-				self:y(SCREEN_CENTER_Y-65);
-			end;
-		end;
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				self:diffuse(color("#ffffff"));
-				self:sleep(0.65);
-				self:diffusealpha(0.8);
-				self:zoomx(2);
-				self:zoomy(0);
-				self:linear(0.1);
-				self:zoomy(2);
-				self:rotationz(0);
-				self:linear(0.5);
-				self:zoom(1.2);
-				self:rotationz(90);
-				self:diffusealpha(0.4);
-				self:linear(0.05);
-				self:diffusealpha(0);
-			end;
-		end;
-	};
-
-
-	-- Ring
-	LoadActor( "Fullcombo01" ) .. {
-		InitCommand=function(self)
-			self:zoom(0);
-			if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-				self:y(SCREEN_CENTER_Y+57);
-			else
-				self:y(SCREEN_CENTER_Y-65);
-			end;
-		end;
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				self:diffuse(GetFullComboEffectColor2(pss));
-				self:sleep(0.65);
-				self:zoomx(2);
-				self:zoomy(0);
-				self:linear(0.1);
-				self:zoomy(2);
-				self:rotationz(0);
-				self:linear(0.5);
-				self:zoom(1.2);
-				self:rotationz(90);
-				self:linear(0.15);
-				self:zoomy(0);
-				self:zoomx(0.5);
-				self:diffusealpha(0);
-			end;
-		end;
-	};
-
-	-- Ring bar
-	LoadActor( "Fullcombo02" ) .. {
-		InitCommand=function(self)
-			self:zoom(0);
-			if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-				self:y(SCREEN_CENTER_Y+57);
-			else
-				self:y(SCREEN_CENTER_Y-65);
-			end;
-		end;
-		OffCommand=function(self)
-			if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-				self:diffuse(GetFullComboEffectColor2(pss));
-				self:sleep(0.65);
-				self:zoomx(4);
-				self:zoomy(0);
-				self:linear(0.1);
-				self:zoomy(4);
-				self:rotationz(0);
-				self:linear(0.5);
-				self:zoom(1.25);
-				self:rotationz(-90);
-				self:linear(0.15);
-				self:zoomy(0);
-				self:zoomx(0.5);
-				self:diffusealpha(0);
-			end;
-		end;
-	};
-
-};
-
--- Star highlight
-t[#t+1] = LoadActor("SStar") .. {
-	InitCommand=cmd(x,GetPosition(pn);diffusealpha,0;blend,Blend.Add);
-	OffCommand=function(self)
-		if pss:FullCombo() or pss:FullComboOfScore('TapNoteScore_W3') then
-			if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-				self:y(SCREEN_CENTER_Y+152);
-				self:diffusealpha(0.95);
-				self:zoomx(0);
-				self:linear(0.1);
-				self:zoomx(4);
-				self:zoomy(1);
-				self:linear(0.12);
-				self:zoomx(1);
-				self:addy(-120);
-				self:linear(0.36);
-				self:addy(-720);
-			else
-				self:y(SCREEN_CENTER_Y-160);
-				self:diffusealpha(0.95);
-				self:zoomx(0);
-				self:linear(0.1);
-				self:zoomx(4);
-				self:zoomy(1);
-				self:linear(0.12);
-				self:zoomx(1);
-				self:addy(120);
-				self:linear(0.36);
-				self:addy(720);
-			end;
-		end;
-	end;
-};
-
--- FullCombo text pictures
-t[#t+1] = Def.ActorFrame{
-	InitCommand=function(self)
-		if GAMESTATE:PlayerIsUsingModifier(pn,'reverse') then
-			self:y(SCREEN_CENTER_Y+57);
-		else
-			self:y(SCREEN_CENTER_Y-65);
-		end;
-		self:x(GetPosition(pn));
-	end;
-
-	-- Marvelous FullCombo
+					s:diffusealpha(0.95):zoomx(0):linear(0.1):zoomx(6):zoomy(1)
+					:linear(0.12):zoomx(1):addy(180):linear(0.36):addy(1080)
+				end
+			end
+		end,
+	},
 	Def.Sprite{
-		OffCommand=function(self)
-			if pss:FullComboOfScore('TapNoteScore_W1') then
-				self:Load(THEME:GetPathB("ScreenGameplay","overlay/FullCombo/FCM"));
-				self:diffusealpha(0);
-				self:rotationz(-5);
-				self:sleep(0.6);
-				self:diffusealpha(1);
-				self:zoomy(0);
-				self:linear(0.1);
-				self:zoom(TextZoom());
-				self:linear(0.5);
-				self:zoom(TextZoom()*1.15);
-				self:linear(0.05);
-				self:diffusealpha(0.66);
-				self:zoomx(TextZoom()*1.165);
-				self:linear(0.1);
-				self:zoomy(0);
-				self:zoomx(TextZoom()*1.195);
-				self:diffusealpha(0);
-			elseif pss:FullComboOfScore('TapNoteScore_W2') then
-				self:Load(THEME:GetPathB("ScreenGameplay","overlay/FullCombo/FCP"));
-				self:diffusealpha(0);
-				self:rotationz(-5);
-				self:sleep(0.6);
-				self:diffusealpha(1);
-				self:zoomy(0);
-				self:linear(0.1);
-				self:zoom(TextZoom());
-				self:linear(0.5);
-				self:zoom(TextZoom()*1.15);
-				self:linear(0.05);
-				self:diffusealpha(0.66);
-				self:zoomx(TextZoom()*1.165);
-				self:linear(0.1);
-				self:zoomy(0);
-				self:zoomx(TextZoom()*1.195);
-				self:diffusealpha(0);
-			elseif pss:FullComboOfScore('TapNoteScore_W3') then
-				self:Load(THEME:GetPathB("ScreenGameplay","overlay/FullCombo/FCGr"));
-				self:diffusealpha(0);
-				self:rotationz(-5);
-				self:sleep(0.6);
-				self:diffusealpha(1);
-				self:zoomy(0);
-				self:linear(0.1);
-				self:zoom(TextZoom());
-				self:linear(0.5);
-				self:zoom(TextZoom()*1.15);
-				self:linear(0.05);
-				self:diffusealpha(0.66);
-				self:zoomx(TextZoom()*1.165);
-				self:linear(0.1);
-				self:zoomy(0);
-				self:zoomx(TextZoom()*1.195);
-				self:diffusealpha(0);
-			else
-				self:visible(false);
-			end;
-		end;
-	};
-};
+		InitCommand=function(s)
+			s:y(_screen.cy)
+		end,
+		OffCommand=function(s)
+			if IsFullCombo() then
+				if pss:FullComboOfScore('TapNoteScore_W1') then
+					s:Load(THEME:GetPathB("ScreenGameplay","overlay/FullCombo/FCM.png"))
+				elseif pss:FullComboOfScore('TapNoteScore_W2') then
+					s:Load(THEME:GetPathB("ScreenGameplay","overlay/FullCombo/FCP.png"))
+				elseif pss:FullComboOfScore('TapNoteScore_W3') then
+					s:Load(THEME:GetPathB("ScreenGameplay","overlay/FullCombo/FCGr.png"))
+				elseif pss:FullComboOfScore('TapNoteScore_W4') or pss:FullComboOfScore('TapNoteScore_W5') then
+					s:Load(THEME:GetPathB("ScreenGameplay","overlay/FullCombo/FCGo.png"))
+				end
+				s:diffusealpha(0):rotationz(-5):sleep(0.6):diffusealpha(1):zoomy(0)
+				:linear(0.1):zoom(TextZoom()):linear(0.5):zoom(TextZoom()*1.73):linear(0.05)
+				:diffusealpha(0.66):zoomx(TextZoom()*1.75):linear(0.1):zoomy(0):zoomx(TextZoom()*1.8):diffusealpha(0)
+			end
+		end,
+	}
+}
 
-return t;
+for i=1,(NumColumns*0.75) do
+	t[#t+1] = Def.ActorFrame{
+		InitCommand=function(s)
+			s:x(GetPosition(pn)):diffusealpha(0)
+			if modre then
+				s:y(_screen.cy+(THEME:GetMetric("Player","ReceptorArrowsYReverse")+190))
+			else
+				s:y(_screen.cy+(THEME:GetMetric("Player","ReceptorArrowsYStandard")-190))
+			end
+		end,
+		OffCommand = function(s)
+			if IsFullCombo() then
+				s:diffuse(FullComboEffectColor[pss:FullComboType()])
+			end
+		end,
+		LoadActor("Slim")..{
+			InitCommand=function(s) s:blend(Blend.Add)
+				s:x((NFWidth/2)-(i*tonumber(THEME:GetMetric("ArrowEffects","ArrowSpacing")*2.25)))
+			end,
+			OffCommand=function(s)
+				if IsFullCombo() then
+					s:diffusealpha(0.5):zoomx(0):zoomy(0.5):linear(0.25):diffusealpha(0.25)
+					:zoomx(1):zoomy(1.75):linear(0.25):zoomx(0):zoomy(0.5):diffusealpha(0)
+				end
+			end,
+		},
+
+	}
+end
+
+return t

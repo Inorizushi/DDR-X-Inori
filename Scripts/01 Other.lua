@@ -383,3 +383,18 @@ function GetCurrentStepsPossiblyCPU(pn)
 	end
 	return GAMESTATE:GetCurrentSteps(pn)
 end
+
+--not really related but this seems like an OK place
+function PlayerStageStats:FullComboType()
+	if self:FullComboOfScore('TapNoteScore_W1') then
+		return 'TapNoteScore_W1'
+	elseif self:FullComboOfScore('TapNoteScore_W2') then
+		return 'TapNoteScore_W2'
+	elseif self:FullComboOfScore('TapNoteScore_W3') then
+		return 'TapNoteScore_W3'
+	elseif self:FullComboOfScore('TapNoteScore_W5') then
+		return 'TapNoteScore_W4'
+	else
+		return nil
+	end
+end
