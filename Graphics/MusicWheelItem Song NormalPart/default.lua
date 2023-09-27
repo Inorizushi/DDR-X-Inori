@@ -25,7 +25,7 @@ local t = Def.ActorFrame{
   			local Course = param.Course;
   			if Song then
   				self:y(-8)
-  				self:settext(Song:GetTranslitFullTitle());
+  				self:settext(Song:GetDisplayFullTitle());
   				self:diffuse(SongAttributes.GetMenuColor(Song))
   			elseif Course then
   				self:settext(Course:GetDisplayFullTitle());

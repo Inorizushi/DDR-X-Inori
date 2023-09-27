@@ -13,7 +13,8 @@ local defaultPrefs =
 	character = "",
 	filter = 0,
 	lanes = false,
-	bias = false
+	bias = false,
+	region = "",
 }
 local gameSeed = nil
 local machinePrefs = DeepCopy(defaultPrefs)

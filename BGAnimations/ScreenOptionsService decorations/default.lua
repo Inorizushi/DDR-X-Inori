@@ -62,6 +62,9 @@ end;
 };]]--
 
 t[#t+1] = Def.ActorFrame{
+	OffCommand=function(s)
+		SOUND:DimMusic(0,math.huge)
+	end,
 	LoadActor( "../_Banner/Side On" )..{
 		OnCommand=cmd(x,SCREEN_CENTER_X-302;y,SCREEN_BOTTOM-90;);
 		OffCommand=cmd(accelerate,0.233;addx,20;sleep,0;diffusealpha,0);

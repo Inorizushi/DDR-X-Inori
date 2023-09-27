@@ -3,9 +3,9 @@ return Def.ActorFrame{
     InitCommand=function(s)
       s:align(0,0):xy(-367,-165);
       if GAMESTATE:GetMasterPlayerNumber() == 'PlayerNumber_P1' then
-        s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Single/Art (doubleres).png"));
+        s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Single/Art.png"));
       else
-        s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Single/Art2 (doubleres).png"));
+        s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Single/Art2.png"));
       end;
     end;
     BeginCommand=function(s)
@@ -23,12 +23,12 @@ return Def.ActorFrame{
     OnCommand=cmd(zoom,0;sleep,0.3;linear,0.05;zoom,1.1;linear,0.05;zoom,1);
     OffCommand=cmd(linear,0.05;zoomy,0;diffusealpha,0);
     GainFocusCommand=function(s)
-      s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Single/Color (doubleres).png"));
+      s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Single/Color.png"));
       s:diffuseshift():effectcolor1(color("1,1,1,1")):effectcolor2(color("0.75,0.75,0.75,1")):effectperiod(0.2)
     end;
     LoseFocusCommand=function(s)
       s:stoptweening()
-      s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Single/Gray (doubleres).png"));
+      s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Single/Gray.png"));
       s:stopeffect()
     end;
   };

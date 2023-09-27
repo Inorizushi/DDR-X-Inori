@@ -24,7 +24,7 @@ end
 local t = Def.ActorFrame {
 	InitCommand=cmd(xy,WideScale(_screen.cx-162,_screen.cx-192),_screen.cy);
 	LoadActor( "difficulty_bg" )..{
-		InitCommand=cmd(y,135);
+		InitCommand=cmd(y,135;diffusealpha,0.5);
 		OnCommand=cmd(zoomy,0;sleep,0.466;zoomy,0.136;linear,0.133;zoomy,1.036;linear,0.066;zoomy,0.88;linear,0.033;zoomy,1);
 		OffCommand=cmd(sleep,0.266;accelerate,0.133;addx,-SCREEN_WIDTH/2);
 	};

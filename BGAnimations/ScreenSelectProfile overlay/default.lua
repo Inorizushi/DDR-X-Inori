@@ -24,19 +24,20 @@ end
 --�d�����e����---------------------------
 function LoadCard(cColor,cColor2,Player,IsJoinFrame)
 	local t = Def.ActorFrame {
-    LoadActor("Backer") .. {
-			InitCommand=cmd(zoomy,0);
-			OnCommand=cmd(sleep,0.3;linear,0.3;zoomy,1;);
-			OffCommand=function(self)
+		Def.Sprite{
+			Texture="Backer",
+			InitCommand=function(s) s:zoomy(0):diffusealpha(1) end,
+			OnCommand=function(s) s:sleep(0.3):linear(0.3):zoomy(1.007) end,
+			OffCommand=function(s)
 				if IsJoinFrame then
-					(cmd(linear,0.1;zoomy,0.100;linear,0.1;diffusealpha,0))(self);
+					s:linear(0.1):zoomy(0.100):linear(0.1):diffusealpha(0)
 				else
-					(cmd(sleep,0.7;linear,0.1;zoomy,0.100;linear,0.1;diffusealpha,0))(self);
+					s:sleep(0.7):linear(0.1):zoomy(0.100):linear(0.1):diffusealpha(0)
 				end
-			end;
-		};
+			end
+		},
     LoadActor("Frame1")..{
-      InitCommand=cmd(xy,6,-134;diffusealpha,0);
+      InitCommand=cmd(xy,6,-141;diffusealpha,0);
       OnCommand=function(self)
         if IsJoinFrame then
           (cmd(linear,0.3;diffusealpha,0))(self);
@@ -47,7 +48,7 @@ function LoadCard(cColor,cColor2,Player,IsJoinFrame)
       OffCommand=cmd(stoptweening;sleep,0.6;diffusealpha,0);
     };
     LoadActor("Frame2")..{
-      InitCommand=cmd(xy,6,-60;diffusealpha,0);
+      InitCommand=cmd(xy,6,-70;diffusealpha,0);
       OnCommand=function(self)
         if IsJoinFrame then
           (cmd(linear,0.3;diffusealpha,0))(self);
@@ -57,20 +58,20 @@ function LoadCard(cColor,cColor2,Player,IsJoinFrame)
       end;
       OffCommand=cmd(stoptweening;sleep,0.6;diffusealpha,0);
     };
-    LoadActor("Text1")..{
-      Name="Text1";
-      InitCommand=cmd(xy,-66,-135;diffusealpha,0);
-      OnCommand=function(self)
-        if IsJoinFrame then
-          (cmd(linear,0.3;diffusealpha,0))(self);
-        else
-          self:sleep(1):linear(0.25):diffusealpha(1)
-        end
-      end;
-      OffCommand=cmd(stoptweening;sleep,0.6;diffusealpha,0);
-    };
+	LoadActor("Text1")..{
+		Name="Text1";
+		InitCommand=cmd(xy,-67,-141;diffusealpha,0);
+		OnCommand=function(self)
+		  if IsJoinFrame then
+			(cmd(linear,0.3;diffusealpha,0))(self);
+		  else
+			self:sleep(1):linear(0.25):diffusealpha(1)
+		  end
+		end;
+		OffCommand=cmd(stoptweening;sleep,0.6;diffusealpha,0);
+	  };
     LoadActor("radartag.png")..{
-      InitCommand=cmd(diffusealpha,0;xy,-70,-20);
+      InitCommand=cmd(diffusealpha,0;xy,-70,-28);
       OnCommand=function(self)
         if IsJoinFrame then
           (cmd(linear,0.3;diffusealpha,0))(self);
@@ -83,75 +84,72 @@ function LoadCard(cColor,cColor2,Player,IsJoinFrame)
       end;
     };
     Def.ActorFrame{
-      InitCommand=cmd(xy,-88,-63);
-      LoadActor("enjoycirc") .. {
-        InitCommand=cmd(zoomy,0;diffuse,cColor2);
-        OnCommand=cmd(sleep,0.9;linear,0.05;zoomy,0.3;linear,0.05;zoomy,1.2;linear,0.1;zoomy,1;queuecommand,"Anim");
-        AnimCommand=cmd(glowshift;effectcolor1,color("0,1,0,0.2");effectcolor2,color("1,1,1,0");effectperiod,1);
-        OffCommand=cmd(linear,0.2;zoom,0;diffusealpha,0);
-      };
-      LoadActor("enjoyspin") .. {
-        InitCommand=cmd(diffuse,cColor2;zoom,0;spin;effectmagnitude,0,0,180);
-        OnCommand=cmd(rotationz,360;sleep,1;zoom,1;linear,0.3;rotationz,0);
-        OffCommand=cmd(linear,0.2;rotationz,-360;diffusealpha,0);
-      };
-   		LoadActor("enjoyword") .. {
-         InitCommand=cmd(zoomy,0;y,27;diffuse,cColor2);
+		InitCommand=cmd(xy,-90,-68);
+      	LoadActor("enjoycirc 1x3") .. {
+        	InitCommand=cmd(animate,false,setstate,0;zoomy,0;diffuse,cColor2);
+        	OnCommand=cmd(sleep,0.9;linear,0.05;zoomy,0.3;linear,0.05;zoomy,1.2;linear,0.1;zoomy,1;queuecommand,"Anim");
+        	AnimCommand=cmd(glowshift;effectcolor1,color("0,1,0,0.2");effectcolor2,color("1,1,1,0");effectperiod,1);
+        	OffCommand=cmd(linear,0.2;zoom,0;diffusealpha,0);
+      	};
+      	LoadActor("enjoyspin 1x3") .. {
+        	InitCommand=cmd(animate,false,setstate,0;diffuse,cColor2;zoom,0;spin;effectmagnitude,0,0,180);
+        	OnCommand=cmd(rotationz,360;sleep,1;zoom,1;linear,0.3;rotationz,0);
+        	OffCommand=cmd(linear,0.2;rotationz,-360;diffusealpha,0);
+      	};
+	  	LoadActor("enjoyword") .. {
+			InitCommand=cmd(zoomy,0;xy,1,22;diffuse,cColor2);
    			OnCommand=cmd(sleep,0.85;linear,0.3;zoomy,1);
    			OffCommand=cmd(linear,0.2;zoomy,0;diffusealpha,0);
    		};
     };
-    --top
-    LoadActor("Bar1")..{
-			Name = "Frame";
-			InitCommand=cmd(y,0;zoomx,0);
-			OnCommand=cmd(linear,0.3;zoomx,1;linear,0.3;y,-186);
-      OffCommand=function(self)
-        if IsJoinFrame then
-          (cmd(linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
-        else
-          (cmd(sleep,0.7;linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
-        end;
+	Def.ActorFrame{
+		InitCommand=cmd(y,0;zoomx,0);
+		OnCommand=cmd(linear,0.3;zoomx,1;linear,0.3;y,-190);
+      	OffCommand=function(self)
+        	if IsJoinFrame then
+          		(cmd(linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
+        	else
+          		(cmd(sleep,0.7;linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
+        	end
+		end;
+		Name="Top",
+		Def.Sprite{Texture="Bar1",},
+		Def.Sprite{
+			Texture="Player 1x2.png";
+			InitCommand=function(s)
+				s:xy(-2,3):pause():diffusealpha(0):setstate(Player==PLAYER_1 and 0 or 1)
 			end;
-
-		};
-    --bottom
-		LoadActor("Bar1")..{
-			Name = "Frame";
-			InitCommand=cmd(y,0;zoomx,0);
-      OnCommand=function(self)
-        (cmd(linear,0.3;zoomx,1;linear,0.3;y,186))(self);
-      end;
-			OffCommand=function(self)
-        if IsJoinFrame then
-          (cmd(linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
-        else
-          (cmd(sleep,0.7;linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
-        end;
+			OnCommand=function(s)
+				s:sleep(0.6):diffusealpha(1)
+			end;
+			OffCommand=function(s)
+			  if IsJoinFrame then
+				s:linear(0.1):y(0.100):linear(0.1):diffusealpha(0)
+			  else
+				s:sleep(0.7):linear(0.1):y(0.100):linear(0.1):diffusealpha(0)
+			  end;
 			end;
 		};
-    Def.Sprite{
-      Texture="Player 1x2.png";
-      InitCommand=function(self)
-        self:xy(-3,-186):pause():diffusealpha(0):setstate(0)
-      end;
-  		OnCommand=function(self)
-  			if Player== PLAYER_1 then
-  				self:setstate(0)
-  			else
-  				self:setstate(1)
-  			end
-  			(cmd(sleep,0.6;diffusealpha,1))(self);
-  		end;
-      OffCommand=function(self)
-        if IsJoinFrame then
-          (cmd(linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
-        else
-          self:sleep(0.7):linear(0.1):y(0.100):linear(0.1):diffusealpha(0)
-        end;
-      end;
-  	};
 	};
+	Def.ActorFrame{
+		Name="Bottom",
+		InitCommand=cmd(y,0;zoomx,0);
+		  OnCommand=function(self)
+			(cmd(linear,0.3;zoomx,1;linear,0.3;y,176))(self);
+		  end;
+		OffCommand=function(self)
+			if IsJoinFrame then
+				  (cmd(linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
+			else
+				  (cmd(sleep,0.7;linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
+			end;
+		end;
+		Def.Sprite{
+			Name="None",
+			Texture="Bar1.png",
+		},
+	};
+};
 
 	return t
 end
@@ -246,11 +244,10 @@ function LoadPlayerStuff(Player)
 	t[#t+1] = Def.ActorFrame {
 		Name = 'JoinFrame';
 		LoadCard(Color('Outline'),color('0,0,0,0'),Player,true);
-
 		LoadActor("start") .. {
-			InitCommand=cmd(zoomy,0;diffuseshift;effectcolor1,Color('White');effectcolor2,color("#A5A6A5");playcommand,"Animate");
+			InitCommand=cmd(y,-6;zoomy,0;diffuseshift;effectcolor1,Color('White');effectcolor2,color("#A5A6A5");playcommand,"Animate");
 			OnCommand=cmd(zoomy,0;zoomx,0;sleep,0.5;linear,0.1;zoomx,0.5;zoomy,1);
-      AnimateCommand=cmd(smooth,0.1;zoomx,1.05;smooth,0.1;zoomx,1;queuecommand,"Animate");
+      		AnimateCommand=cmd(smooth,0.1;zoomx,1.05;smooth,0.1;zoomx,1;queuecommand,"Animate");
 			OffCommand=cmd(diffusealpha,0);
 		};
 
@@ -259,16 +256,45 @@ function LoadPlayerStuff(Player)
 	t[#t+1] = Def.ActorFrame {
 		Name = 'BigFrame';
 		LoadCard(PlayerColor(),color('1,1,1,1'),Player,false);
+		Def.ActorFrame{
+			Name="Bottom",
+			InitCommand=cmd(y,0;zoomx,0);
+			  OnCommand=function(self)
+				(cmd(linear,0.3;zoomx,1;linear,0.3;y,191))(self);
+			  end;
+			OffCommand=function(self)
+				if IsJoinFrame then
+					  (cmd(linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
+				else
+					  (cmd(sleep,0.7;linear,0.1;y,0.100;linear,0.1;diffusealpha,0))(self);
+				end;
+			end;
+			Def.Sprite{
+				Name="1Line",
+				Texture="Bar2.png",
+				InitCommand=function(s) s:diffusealpha(0):valign(1) end,
+			},
+			Def.Sprite{
+				Name="2Line",
+				Texture="Bar3.png",
+				InitCommand=function(s) s:diffusealpha(0):valign(1) end,
+			},
+			Def.Sprite{
+				Name="NavText",
+				Texture="Nav 1x10",
+				InitCommand=function(s) s:animate(false):setstate(0):diffusealpha(0):valign(1) end,
+			}
+		};
 	};
 	t[#t+1] = Def.ActorFrame {
 		Name = 'SmallFrame';
-		InitCommand=cmd(y,32);
+		InitCommand=cmd(y,22);
     OffCommand=function(self)
       self:sleep(0.2):linear(0.2):diffusealpha(0)
     end;
     --Air
-		LoadActor("RadarBack.png")..{
-			InitCommand=cmd(x,-86;y,74);
+		LoadActor("RadarBack 1x2.png")..{
+			InitCommand=cmd(x,-84;y,74;animate,false;setstate,1;zoomx,-1);
 			OnCommand=cmd(diffusealpha,0;sleep,1;diffusealpha,1);
 		};
     LoadActor("labels/air.png")..{
@@ -276,8 +302,8 @@ function LoadPlayerStuff(Player)
 			OnCommand=cmd(rotationz,360;sleep,0.7;linear,0.2;rotationz,0;diffusealpha,1);
 		};
     --Voltage
-		LoadActor("RadarBack.png")..{
-			InitCommand=cmd(xy,-110,-14);
+	LoadActor("RadarBack 1x2.png")..{
+			InitCommand=cmd(xy,-110,-12;animate,false;setstate,0);
 			OnCommand=cmd(diffusealpha,0;sleep,1.05;diffusealpha,1);
 		};
     LoadActor("labels/voltage.png")..{
@@ -285,8 +311,8 @@ function LoadPlayerStuff(Player)
 			OnCommand=cmd(rotationz,360;sleep,0.75;linear,0.2;rotationz,0;diffusealpha,1);
 		};
     --Stream
-    LoadActor("RadarBack.png")..{
-			InitCommand=cmd(zoomx,-1;x,56;y,-34);
+    LoadActor("RadarBack 1x2.png")..{
+			InitCommand=cmd(x,54;y,-32;animate,false;setstate,1);
 			OnCommand=cmd(diffusealpha,0;sleep,1.1;diffusealpha,1);
 		};
     LoadActor("labels/stream.png")..{
@@ -294,8 +320,8 @@ function LoadPlayerStuff(Player)
 			OnCommand=cmd(rotationz,360;sleep,0.9;linear,0.2;rotationz,0;diffusealpha,1);
 		};
     --Chaos
-		LoadActor("RadarBack.png")..{
-			InitCommand=cmd(zoomx,-1;x,122;y,-27);
+	LoadActor("RadarBack 1x2.png")..{
+			InitCommand=cmd(x,122;y,-24;animate,false;setstate,0);
 			OnCommand=cmd(diffusealpha,0;sleep,1.15;diffusealpha,1);
 		};
     LoadActor("labels/chaos.png")..{
@@ -303,22 +329,26 @@ function LoadPlayerStuff(Player)
 			OnCommand=cmd(rotationz,360;sleep,0.95;linear,0.2;rotationz,0;diffusealpha,1);
 		};
     --Freeze
-		LoadActor("RadarBack.png")..{
-			InitCommand=cmd(zoomx,-1;x,126;y,70);
+	LoadActor("RadarBack 1x2.png")..{
+			InitCommand=cmd(x,124;y,68;animate,false;setstate,1);
 			OnCommand=cmd(diffusealpha,0;sleep,1.2;diffusealpha,1);
 		};
     LoadActor("labels/freeze.png")..{
 			InitCommand=cmd(xy,76,72;diffusealpha,0);
 			OnCommand=cmd(rotationz,360;sleep,1;linear,0.2;rotationz,0;diffusealpha,1);
 		};
-		LoadActor( "Radar.png" )..{
-			InitCommand=cmd(zoomy,0.5;xy,4,29;diffusealpha,0);
-			OnCommand=cmd(sleep,0.7;diffusealpha,1;linear,0.05;zoomy,1;linear,0.05;zoomx,1.3;linear,0.1;zoomx,1);
-		};
-    LoadActor( "radar_glow.png" )..{
-			InitCommand=cmd(xy,4,29;diffusealpha,0;diffuseshift;effectcolor1,1,1,1,1;effectcolor2,1,1,1,0.4;effectperiod,1.33);
-			OnCommand=cmd(sleep,0.9;diffusealpha,1;);
-		};
+		Def.ActorFrame{
+			InitCommand=function(s) s:xy(5,31) end,
+			LoadActor( "Radar.png" )..{
+				InitCommand=cmd(zoomy,0.5;diffusealpha,0);
+				OnCommand=cmd(sleep,0.7;diffusealpha,1;linear,0.05;zoomy,1;linear,0.05;zoomx,1.3;linear,0.1;zoomx,1);
+			};
+		LoadActor( "radar_glow.png" )..{
+				InitCommand=cmd(diffusealpha,0;diffuseshift;effectcolor1,1,1,1,1;effectcolor2,1,1,1,0.4;effectperiod,1.33);
+				OnCommand=cmd(sleep,0.9;diffusealpha,1;);
+			};
+		},
+		
 	};
 	t[#t+1] = Def.ActorScroller{
 		Name = 'Scroller';
@@ -340,33 +370,45 @@ function LoadPlayerStuff(Player)
 	};
 
 	--�U���d��-----------------
-	t[#t+1] = LoadFont("_sveningsson Bold 60px") .. {
+	t[#t+1] = LoadFont("_ag book stencil/20px/20px") .. {
 		Name = 'SelectedProfileText';
-    InitCommand=cmd(y,-144;x,24;zoomy,0.3;zoomx,0.4;uppercase,true;diffuse,color("1,1,1,0");maxwidth,400);
-    OnCommand=function(self)
-      if IsJoinFrame then
-        (cmd(linear,0.3;diffusealpha,0))(self);
-      else
-        self:sleep(0.7):linear(0.25):diffusealpha(1)
-      end
-    end;
+    	InitCommand=cmd(xy,-6,-150;zoomx,1.5;zoomy,0.8;uppercase,true;diffuse,color("1,1,1,0");maxwidth,400);
+    	OnCommand=function(self)
+      		if IsJoinFrame then
+        		(cmd(linear,0.3;diffusealpha,0))(self);
+      		else
+        		self:sleep(0.7):linear(0.25):diffusealpha(1)
+      		end
+    	end;
 		OffCommand=cmd(stoptweening;sleep,0.3;linear,0.2;diffusealpha,0);
 	};
-  t[#t+1] = LoadFont("_sveningsson Bold 60px") .. {
+	t[#t+1] = LoadFont("_Trebuchet MS/16px/16px") .. {
+		Name = 'selectPlayerRegion';
+		InitCommand=cmd(xy,64,-129;skewx,-0.1;basezoom,0.6;zoomx,0.85;uppercase,true;diffuse,color("1,1,1,0");maxwidth,100);
+    	OnCommand=function(self)
+      		if IsJoinFrame then
+        		(cmd(linear,0.3;diffusealpha,0))(self);
+      		else
+        		self:sleep(0.7):linear(0.25):diffusealpha(1)
+      		end
+    	end;
+		OffCommand=cmd(stoptweening;sleep,0.3;linear,0.2;diffusealpha,0);
+	};
+	t[#t+1] = LoadFont("_ag book stencil/20px/20px") .. {
 		Name = 'selectPlayerUID';
-		InitCommand=cmd(x,60;y,-107;zoomy,0.23;zoomx,0.33;diffuse,color("1,1,1,0");maxwidth,420);
-    OnCommand=function(self)
-      if IsJoinFrame then
-        (cmd(linear,0.3;diffusealpha,0))(self);
-      else
-        self:sleep(0.7):linear(0.25):diffusealpha(1)
-      end
-    end;
+		InitCommand=cmd(xy,62,-114;zoomx,1.4;zoomy,0.6;uppercase,true;diffuse,color("1,1,1,0");maxwidth,100);
+    	OnCommand=function(self)
+      		if IsJoinFrame then
+        		(cmd(linear,0.3;diffusealpha,0))(self);
+      		else
+        		self:sleep(0.7):linear(0.25):diffusealpha(1)
+      		end
+    	end;
 		OffCommand=cmd(stoptweening;sleep,0.3;linear,0.2;diffusealpha,0);
 	};
-  t[#t+1]=LoadFont("_helvetica Bold 24px") .. {
+  t[#t+1]=LoadFont("_ag book stencil/20px/20px") .. {
 		Name = 'selectRank';
-    InitCommand=cmd(x,-34;y,-40;zoom,0.7;diffuse,color("1,1,1,0");halign,0;skewx,-0.2;strokecolor,Color("Outline");maxwidth,350);
+    InitCommand=cmd(x,-10;y,-46;zoom,0.8;diffuse,color("1,1,1,0");halign,0;skewx,-0.1;strokecolor,Color("Outline");maxwidth,350);
 		OnCommand=function(self)
 			(cmd(sleep,0.7;diffusealpha,1))(self);
 		end;
@@ -374,29 +416,16 @@ function LoadPlayerStuff(Player)
 	};
 	t[#t+1] = LoadFont("_enjoynumber") .. {
 		Name = 'SelectedProfileLevel';
-    InitCommand=cmd(x,-88;y,-63;zoomy,0;zoomx,0.8;strokecolor,color("#000000");maxwidth,82);
+    InitCommand=cmd(xy,-90,-68;zoomy,0;zoomx,0.8;strokecolor,color("#000000");maxwidth,82);
 		OnCommand=cmd(sleep,0.8;linear,0.05;diffusealpha,1;zoomy,0.2;linear,0.05;zoomy,1;linear,0.1;zoomy,0.8);
 		OffCommand=cmd(linear,0.2;zoomy,0;diffusealpha,0);
 	};
 
-	t[#t+1] = LoadFont("_handelgothic bt 20px") .. {
-		Name = 'selectSongsPlayed';
-    InitCommand=function(self)
-      if Player==PLAYER_2 then
-        self:x(28);
-      else
-        self:x(25)
-      end;
-      (cmd(y,-56;zoom,0;diffuse,color("1,1,1,1");diffusebottomedge,color("1,1,0.1,1");strokecolor,Color("Outline");maxwidth,150))(self);
-    end;
-		OnCommand=cmd(sleep,0.9;linear,0.05;diffusealpha,1;zoomy,0.3;zoomx,0.4;);
-		OffCommand=cmd(stoptweening;linear,0.1;zoomy,0;diffusealpha,0);
-	};
 	------MyGrooveRadar
 	if (Player == PLAYER_1) then
 		t[#t+1] = LoadActor( THEME:GetPathG("ScreenSelectProfile", "GrooveRadar" ),1,0.2,0.2,0.2,0.5,PLAYER_1,'single')..{
 			Name = "GVRD1S";
-      InitCommand=cmd(xy,4,61;zoom,1;diffusealpha,0;diffuse,PlayerColor(PLAYER_1));
+      InitCommand=cmd(xy,5,54;zoom,1;diffusealpha,0;diffuse,PlayerColor(PLAYER_1));
 			OnCommand=cmd(sleep,0.9;linear,0.05;diffusealpha,1;);
 			OffCommand=cmd(sleep,0.2;linear,0.2;diffusealpha,0);
 		};
@@ -438,8 +467,8 @@ function LoadPlayerStuff(Player)
 
     t[#t+1] = LoadActor( THEME:GetPathG("ScreenSelectProfile", "GrooveRadar" ),1,0.2,0.2,0.2,0.5,PLAYER_1, 'double')..{
 			Name = "GVRD1D";
-			InitCommand=cmd(xy,4,61;zoom,1;diffusealpha,0;diffuse,PlayerColor(PLAYER_2));
-			OnCommand=cmd(sleep,0.9;linear,0.05;diffusealpha,1;);
+			InitCommand=cmd(xy,5,54;zoom,1;diffusealpha,0;diffuse,PlayerColor(PLAYER_2));
+			OnCommand=cmd(sleep,0.9;linear,0.05;diffusealpha,0;);
 			OffCommand=cmd(sleep,0.2;linear,0.2;diffusealpha,0);
 		};
     t[#t+1]=LoadFont("_russell square 16px") .. {
@@ -567,10 +596,11 @@ function UpdateInternal3(self, Player)
 	local joinframe = frame:GetChild('JoinFrame');
 	local smallframe = frame:GetChild('SmallFrame');
 	local bigframe = frame:GetChild('BigFrame');
+	local bottomframe = bigframe:GetChild('Bottom');
 	local selLevel = frame:GetChild('SelectedProfileLevel');
 	local selectRank = frame:GetChild('selectRank');
 	local selectPlayerUID = frame:GetChild('selectPlayerUID');
-	local selSongsPlayed = frame:GetChild('selectSongsPlayed');
+	local selectPlayerRegion = frame:GetChild('selectPlayerRegion');
 	local selPlayerUID;
 	local selGVRDSingle = (Player == PLAYER_1) and frame:GetChild('GVRD1S') or frame:GetChild('GVRD2S');
 	local selGVRDDouble = (Player == PLAYER_1) and frame:GetChild('GVRD1D') or frame:GetChild('GVRD2D');
@@ -595,13 +625,12 @@ function UpdateInternal3(self, Player)
 			smallframe:visible(true);
 			bigframe:visible(false);
 			seltext:visible(true);
-      selectPlayerUID:visible(true);
+      		selectPlayerUID:visible(true);
 			scroller:visible(true);
 			selLevel:visible(true);
 			selectRank:visible(true);
-			selSongsPlayed:visible(false);
 			selGVRDSingle:visible(true);
-      selGVRDDouble:visible(true);
+      		selGVRDDouble:visible(true);
 			selGVRDValue_S1:visible(true);
 			selGVRDValue_S2:visible(true);
 			selGVRDValue_S3:visible(true);
@@ -612,6 +641,8 @@ function UpdateInternal3(self, Player)
 			selGVRDValue_D3:visible(true);
 			selGVRDValue_D4:visible(true);
 			selGVRDValue_D5:visible(true);
+			bottomframe:GetChild("1Line"):sleep(0.7):linear(0.1):diffusealpha(1)
+			bottomframe:GetChild("NavText"):setstate(2):sleep(0.7):linear(0.1):diffusealpha(1)
 
 			local ind = SCREENMAN:GetTopScreen():GetProfileIndex(Player);
 
@@ -638,16 +669,19 @@ function UpdateInternal3(self, Player)
 				scroller:SetDestinationItem(ind-1);
 				seltext:settext(ProfileInfoCache[ind].DisplayName);
 				selLevel:settext(math.ceil(math.sqrt(ProfileInfoCache[ind].TotalCaloriesBurned) ));
-				selSongsPlayed:settext(tostring(math.ceil(ProfileInfoCache[ind].NumTotalSongsPlayed)));
 
 				selPlayerUID = PROFILEMAN:GetLocalProfileFromIndex(ind-1):GetGUID();
 				selectPlayerUID:settext(string.upper(string.sub(selPlayerUID,1,4).."-"..string.sub(selPlayerUID,5,8)));
 
+				local profileID = PROFILEMAN:GetLocalProfileIDFromIndex(ind-1)
+				local prefs = ProfilePrefs.Read(profileID)
+
+				selectPlayerRegion:settext(prefs.region ~= "" and prefs.region or "N/A")
+
 				local RadarValueTableSingle = {};
 				local RadarValueTableDouble = {};
 
-				local profileID = PROFILEMAN:GetLocalProfileIDFromIndex(ind-1)
-				local prefs = ProfilePrefs.Read(profileID)
+				
 				if SN3Debug then
 					ProfilePrefs.Save(profileID)
 				end
@@ -705,7 +739,6 @@ function UpdateInternal3(self, Player)
 					selectPlayerUID:settext('------------');
 					selLevel:settext('No level info');
 					selectRank:settext('???');
-					selSongsPlayed:visible(false);
 
 					selGVRDSingle:visible(false);
 					selGVRDValue_S1:visible(false);
@@ -732,12 +765,12 @@ function UpdateInternal3(self, Player)
 		joinframe:visible(true);
 		scroller:visible(false);
 		seltext:visible(false);
+		bigframe:visible(false);
+		bottomframe:visible(true);
 		selectPlayerUID:visible(false);
 		smallframe:visible(false);
-		bigframe:visible(false);
 		selLevel:visible(false);
 		selectRank:visible(false);
-		selSongsPlayed:visible(false);
 
 		selGVRDSingle:visible(false);
 		selGVRDValue_S1:visible(false);
@@ -819,12 +852,13 @@ local t = Def.ActorFrame {
 		UpdateInternal3(self, PLAYER_2);
 	end;
 	children = {
-    LoadActor("base")..{
-      InitCommand=cmd(Center;diffusealpha,0);
+    Def.Sprite{
+		Texture="../../bases/profile.jpg",
+		InitCommand=cmd(FullScreen;diffusealpha,0);
     };
 		Def.ActorFrame {
 			Name = 'P1Frame';
-			InitCommand=cmd(x,SCREEN_CENTER_X-160;y,SCREEN_CENTER_Y+10;zoom,1);
+			InitCommand=cmd(x,SCREEN_CENTER_X-159;y,SCREEN_CENTER_Y+21;zoom,1);
 			OnCommand=cmd(sleep,1);
 			OffCommand=cmd();
 			PlayerJoinedMessageCommand=function(self,param)
@@ -836,7 +870,7 @@ local t = Def.ActorFrame {
 		};
 		Def.ActorFrame {
 			Name = 'P2Frame';
-			InitCommand=cmd(x,SCREEN_CENTER_X+160;y,SCREEN_CENTER_Y+10;zoom,1);
+			InitCommand=cmd(x,SCREEN_CENTER_X+159;y,SCREEN_CENTER_Y+21;zoom,1);
 			OnCommand=cmd(sleep,1);
 			OffCommand=cmd();
 			PlayerJoinedMessageCommand=function(self,param)
