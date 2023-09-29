@@ -1,7 +1,7 @@
 return Def.ActorFrame{
   Def.Sprite{
     InitCommand=function(s)
-      s:align(0,0):xy(-367,-165);
+      s:align(0,0):xy(-363,-151);
       if GAMESTATE:GetMasterPlayerNumber() == 'PlayerNumber_P1' then
         s:Load(THEME:GetPathG("","ScreenSelectStyle Icon/Single/Art.png"));
       else
@@ -53,9 +53,13 @@ return Def.ActorFrame{
   	LoadActor( "../nfotop" )..{
   	OnCommand=cmd(y,-50);
   	};
-  	LoadActor( "../nfobottom" )..{
-  	OnCommand=cmd(y,60);
+  	LoadActor( "../bottom 1x2" )..{
+  	InitCommand=function(s) s:xy(1,68):animate(false):setstate(1):diffusealpha(0) end,
   	};
+    Def.Sprite{
+      Texture="../cred req 1x2",
+      InitCommand=function(s) s:animate(false):setstate(0):xy(-26,74) end,
+    },
   	LoadActor( "../stgmax" )..{
   	OnCommand=cmd(x,100;y,-63);
   	};
@@ -73,4 +77,13 @@ return Def.ActorFrame{
   		end
   	};
   };
+  Def.ActorFrame{
+    Name="Player",
+    InitCommand=function(s) s:xy(164,114):diffusealpha(0.4) end,
+    Def.Sprite{
+      Name="P1",
+      Texture="../PBacker 1x4",
+      InitCommand=function(s) s:animate(false):setstate(1) end,
+    }
+  }
 };

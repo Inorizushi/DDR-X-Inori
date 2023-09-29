@@ -39,25 +39,6 @@ elseif GAMESTATE:GetCoinMode() == 'CoinMode_Pay' then
 end
 
 if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then
---XXX: it's easier to have it up here
-local choice
-
-local titleImages = {}
-for _, file in
-	pairs(FILEMAN:GetDirListing("/Themes/"..THEME:GetCurThemeName().."/Graphics/_MenuArt/us/", false, true))
-do
-	if ActorUtil.GetFileType(file) == 'FileType_Bitmap' then
-		--this clustercuss extracts the part of the filename that is actually the filename
-		--first it takes the last part of the file name and extracts the part that isn't the extension
-		--then it trims whitespace, and finally removes tags (such as doubleres)
-		local name = string.lower(string.match(file, "/([^/]-)%.%w+"):gsub("^%s*",""):gsub("%s*$", ""):gsub("% (.-%)", ""))
-		if name then
-			titleImages[name] = file
-			print(name)
-		end
-	end
-end
-
 local heardBefore = false
 
 t[#t+1] = Def.ActorFrame {
@@ -95,9 +76,6 @@ t[#t+1] = Def.ActorFrame {
 		};
 		Def.Sprite{
 			Name="ImageLoader";
-			InitCommand=function(s)
-				for _, file in pairs(titleImages) do s:Load(file) end
-			end;
 			TitleSelectionMessageCommand=function(self, params)
 				choice = string.lower(params.Choice)
 				self:finishtweening()
@@ -107,9 +85,7 @@ t[#t+1] = Def.ActorFrame {
 				self:zoomy(1.05):queuecommand("TitleSelectionPart2")
 			end;
 			TitleSelectionPart2Command=function(self)
-				if titleImages[choice] then
-					self:Load(titleImages[choice])
-				end;
+				self:Load(THEME:GetPathG("","_MenuArt/us/"..choice))
 				self:linear(0.05)
 				self:zoomy(1)
 			end;
@@ -139,9 +115,6 @@ t[#t+1] = Def.ActorFrame{
 	OffCommand=cmd(sleep,0.3;linear,0.083;zoomx,0);
 	Def.Sprite{
 		Name="ImageLoader";
-		InitCommand=function(s)
-			for _, file in pairs(titleText) do s:Load(filetext) end
-		end;
 		TitleSelectionMessageCommand=function(self, params)
 			choice = string.lower(params.Choice)
 			self:finishtweening()
@@ -151,9 +124,7 @@ t[#t+1] = Def.ActorFrame{
 			self:diffusealpha(0):queuecommand("TitleSelectionPart2")
 		end;
 		TitleSelectionPart2Command=function(self)
-			if titleText[choice] then
-				self:Load(titleText[choice])
-			end;
+			self:Load(THEME:GetPathG("","_MenuArt/us/text/"..choice))
 			self:linear(0.05)
 			self:diffusealpha(1)
 		end;

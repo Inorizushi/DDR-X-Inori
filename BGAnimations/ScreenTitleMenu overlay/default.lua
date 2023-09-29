@@ -5,7 +5,8 @@ return Def.ActorFrame{
       SOUND:PlayAnnouncer("Title intro")
     end,
   };
-  LoadActor("start_frame")..{
+  LoadActor("frame")..{
+    InitCommand=function(s) s:animate(false):setstate(0) end,
     OnCommand=cmd(diffusealpha,0;rotationz,90;zoom,1.5;sleep,0.833;accelerate,0.15;rotationz,0;zoom,1;diffusealpha,1);
   };
   LoadActor("press_start1a")..{
