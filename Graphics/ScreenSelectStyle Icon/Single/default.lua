@@ -54,7 +54,7 @@ return Def.ActorFrame{
   	OnCommand=cmd(y,-50);
   	};
   	LoadActor( "../bottom 1x2" )..{
-  	InitCommand=function(s) s:xy(1,68):animate(false):setstate(1):diffusealpha(0) end,
+  	InitCommand=function(s) s:xy(1,68):animate(false):setstate(1):diffusealpha(1) end,
   	};
     Def.Sprite{
       Texture="../cred req 1x2",
@@ -77,13 +77,4 @@ return Def.ActorFrame{
   		end
   	};
   };
-  Def.ActorFrame{
-    Name="Player",
-    InitCommand=function(s) s:xy(164,114):diffusealpha(0.4) end,
-    Def.Sprite{
-      Name="P1",
-      Texture="../PBacker 1x4",
-      InitCommand=function(s) s:animate(false):setstate(1) end,
-    }
-  }
 };
